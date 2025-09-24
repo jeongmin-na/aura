@@ -725,6 +725,94 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - REST API with comprehensive endpoints
 - Docker deployment support
 
+## 🎯 Knowledge Base 호출 패턴
+
+```mermaid
+graph TD
+    subgraph "📚 Knowledge Base Components"
+        KB[📚 Knowledge Base]
+        DO[🌐 5G Domain Ontology]
+        CP[🔧 Coding Patterns]
+        PT[📝 Prompt Templates]
+        SC[🏆 Success Cases]
+    end
+    
+    subgraph "🤖 Agents that call Knowledge Base"
+        CVA[🔍 Context Validation Agent]
+        PGA[⚙️ Prompt Generator Agent]
+        CQA[🛡️ Code Quality Agent]
+        POA[📤 Prompt Output Agent]
+        FL[🔄 Feedback Loop]
+    end
+    
+    subgraph "📞 Call Patterns"
+        CP1[5G 용어 검증]
+        CP2[검증 규칙 조회]
+        CP3[일관성 기준 조회]
+        CP4[프롬프트 템플릿]
+        CP5[코딩 패턴]
+        CP6[5G 도메인 지식]
+        CP7[완성도 기준]
+        CP8[기술적 정확성 기준]
+        CP9[Cursor AI 호환성 기준]
+        CP10[성공 사례 업데이트]
+    end
+    
+    %% Agent에서 Knowledge Base로의 호출
+    CVA -.->|호출| CP1
+    CVA -.->|호출| CP2
+    CVA -.->|호출| CP3
+    
+    PGA -.->|호출| CP4
+    PGA -.->|호출| CP5
+    PGA -.->|호출| CP6
+    
+    CQA -.->|호출| CP7
+    CQA -.->|호출| CP8
+    CQA -.->|호출| CP9
+    
+    FL -.->|호출| CP10
+    
+    %% Knowledge Base 구성 요소
+    KB --> DO
+    KB --> CP
+    KB --> PT
+    KB --> SC
+    
+    %% 스타일링
+    classDef knowledge fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef agent fill:#e3f2fd,stroke:#0277bd,stroke-width:2px
+    classDef callPattern fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef call stroke:#e91e63,stroke-width:3px,stroke-dasharray: 5 5
+    
+    class KB,DO,CP,PT,SC knowledge
+    class CVA,PGA,CQA,POA,FL agent
+    class CP1,CP2,CP3,CP4,CP5,CP6,CP7,CP8,CP9,CP10 callPattern
+```
+
+## 🎯 Knowledge Base 호출 시점 정리
+
+### 1. **Context Validation 단계**
+- **DLD 구조 분석 시** → `knowledge_manager.validate_domain_terminology()` 호출
+- **누락 정보 탐지 시** → `knowledge_manager.get_validation_rules()` 호출
+- **일관성 검증 시** → `knowledge_manager.get_consistency_rules()` 호출
+
+### 2. **Prompt Generation 단계**
+- **시스템 프롬프트 로드 시** → `knowledge_manager.get_prompt_template()` 호출
+- **코딩 스타일 추출 시** → `knowledge_manager.search_coding_patterns()` 호출
+- **컨텍스트 보강 시** → `knowledge_manager.get_domain_concept()` 호출
+
+### 3. **Quality Assurance 단계**
+- **완성도 검증 시** → `knowledge_manager.get_quality_benchmarks()` 호출
+- **기술적 정확성 확인 시** → `knowledge_manager.get_technical_accuracy_rules()` 호출
+- **Cursor AI 호환성 검증 시** → `knowledge_manager.get_cursor_ai_rules()` 호출
+
+### 4. **Feedback Loop 단계**
+- **성능 분석 후** → `knowledge_manager.add_success_case()` 호출
+- **개선 제안 생성 후** → `knowledge_manager.update_knowledge_entry()` 호출
+
+**핵심 포인트**: 모든 Knowledge Base 접근은 **명시적인 메서드 호출**을 통해 이루어지며, 각 Agent가 필요할 때마다 **비동기적으로 요청**하고 **응답을 받는** 방식으로 작동합니다! 🔄✨
+
 ## 🚧 Roadmap
 
 ### Version 1.1.0
