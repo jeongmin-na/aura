@@ -1,0 +1,88 @@
+# DLD to Cursor AI Prompt Generation System Configuration
+
+# System Settings
+debug: false
+log_level: "INFO"
+max_concurrent_requests: 10
+
+# Agent Configurations
+context_validation_agent:
+  enabled: true
+  timeout: 300
+  max_retries: 3
+  parameters:
+    min_completeness_score: 0.7
+    consistency_threshold: 0.8
+
+prompt_generator_agent:
+  enabled: true
+  timeout: 300
+  max_retries: 3
+  parameters:
+    enable_all_steps: true
+    project_analysis_depth: "full"
+    style_extraction_enabled: true
+
+code_quality_agent:
+  enabled: true
+  timeout: 300
+  max_retries: 3
+  parameters:
+    quality_checks_enabled: ["completeness", "technical_accuracy", "cursor_ai_compatibility", "clarity", "specificity", "actionability"]
+    strict_validation: false
+
+prompt_output_agent:
+  enabled: true
+  timeout: 300
+  max_retries: 3
+  parameters:
+    enable_quality_enhancements: true
+    generate_multiple_formats: true
+
+feedback_loop:
+  enabled: true
+  timeout: 300
+  max_retries: 3
+  parameters:
+    monitoring_interval: 60  # seconds
+    performance_history_size: 1000
+    trend_analysis_enabled: true
+
+# LLM Configuration
+llm:
+  provider: "openai"
+  model: "gpt-4"
+  api_key: null  # Set via environment variable OPENAI_API_KEY
+  max_tokens: 4000
+  temperature: 0.7
+  timeout: 60
+
+# Knowledge Base Configuration
+knowledge_base:
+  enabled: true
+  data_path: "knowledge_base/data"
+  update_interval: 3600  # seconds
+  cache_size: 1000
+
+# 5G Domain Specific Settings
+domain_5g:
+  protocols: ["NR", "LTE", "5GC", "RAN", "NG-RAN"]
+  frequency_bands: ["FR1", "FR2", "sub6", "mmWave"]
+  network_functions: ["AMF", "SMF", "UPF", "PCF", "AUSF", "UDM", "NRF"]
+  interfaces: ["N1", "N2", "N3", "N4", "N6", "N8", "N11", "N15", "N22"]
+  performance_kpis: ["latency", "throughput", "reliability", "energy_efficiency"]
+
+# Cursor AI Specific Settings
+cursor_ai:
+  prompt_format: "structured"
+  max_prompt_length: 8000
+  include_context: true
+  include_examples: true
+  optimization_level: "high"
+
+# Quality Thresholds
+quality_thresholds:
+  dld_completeness: 0.8
+  technical_accuracy: 0.9
+  prompt_effectiveness: 0.85
+  code_quality: 0.9

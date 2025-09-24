@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  dld-prompt-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - LOG_LEVEL=INFO
+      - DEBUG=false
+    volumes:
+      - ./knowledge_base/data:/app/knowledge_base/data
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Optional: Add a database service for production use
+  # postgres:
+  #   image: postgres:15
+  #   environment:
+  #     POSTGRES_DB: dld_prompt_system
+  #     POSTGRES_USER: ${DB_USER:-dld_user}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_password}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+
+  # Optional: Add Redis for caching
+  # redis:
+  #   image: redis:7-alpine
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+
+# volumes:
+#   postgres_data:
+#   redis_data:
+
+networks:
+  default:
+    name: dld-prompt-network
