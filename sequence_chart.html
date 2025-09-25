@@ -1,0 +1,130 @@
+# DLD 문서 처리 파이프라인 시퀀스 다이어그램
+
+이 다이어그램은 DLD 문서를 업로드하여 최적화된 Cursor AI 프롬프트를 생성하는 전체 파이프라인을 보여줍니다.
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 사용자
+    participant API as 🌐 REST API
+    participant Master as 🎯 Master Agent
+    participant Context as 🔍 Context Validation
+    participant Prompt as ⚙️ Prompt Generator
+    participant Quality as 🛡️ Quality Agent
+    participant LLM as 🧠 LLM Integration
+    participant Output as 📤 Output Agent
+    participant Feedback as 🔄 Feedback Loop
+    participant KB as 📚 Knowledge Base
+    
+    User->>API: DLD 문서 업로드
+    API->>Master: 처리 요청
+    
+    Note over Master: 1단계: Context Validation
+    Master->>Context: HLD 기반 DLD 검증 시작
+    Context->>Context: HLD 대비 DLD 일관성 검증
+    Context-->>Master: 검증 결과
+    
+    Note over Master: 2단계: Prompt Generation (7단계 파이프라인)
+    Master->>Prompt: 7단계 프롬프트 생성 시작
+    
+    Note over Prompt: 1단계: 프로젝트 코드 구조 분석
+    Prompt->>KB: 프로젝트 코드 구조 요청
+    KB-->>Prompt: 코드 구조 정보 반환
+    Prompt->>Prompt: 디렉토리 스캔 수행
+    Prompt->>Prompt: 파일 의존성 맵핑
+    Prompt->>Prompt: 아키텍처 패턴 식별
+    
+    Note over Prompt: 2단계: DLD 파싱 및 변환
+    Prompt->>Prompt: 기술 스펙 추출
+    Prompt->>Prompt: 요구사항 분류
+    Prompt->>Prompt: 마크다운 변환
+    Prompt->>Prompt: 의사코드 식별
+    
+    Note over Prompt: 3단계: 코드 맵핑 분석
+    Prompt->>Prompt: DLD-코드 매칭 수행
+    Prompt->>Prompt: 함수명 매핑 생성
+    Prompt->>Prompt: 모듈 구조 분석
+    
+    Note over Prompt: 4단계: 코딩 스타일 추출
+    Prompt->>Prompt: 기존 코드 패턴 분석
+    Prompt->>Prompt: 네이밍 컨벤션 추출
+    Prompt->>Prompt: 아키텍처 스타일 학습
+    Prompt->>Prompt: 테스트 패턴 식별
+    Prompt->>Prompt: 코딩 스타일 통합 분석
+    
+    Note over Prompt: 5단계: 시스템 프롬프트 로드
+    Prompt->>KB: 5G 도메인 지식 요청
+    KB-->>Prompt: 프로토콜 스택 + 성능 기준 반환
+    Prompt->>KB: 코딩 가이드라인 요청
+    KB-->>Prompt: C++ 스타일 가이드 반환
+    
+    Note over Prompt: 6단계: Cursor AI Rules 통합
+    Prompt->>KB: 팀 코딩 컨벤션 요청
+    KB-->>Prompt: 프로젝트 규칙 반환
+    Prompt->>KB: AI 활용 가이드라인 요청
+    KB-->>Prompt: Cursor AI 최적화 규칙 반환
+    
+    Note over Prompt: 7단계: 컨텍스트 보강
+    Prompt->>KB: 이전 DLD 정보 요청
+    KB-->>Prompt: 유사 DLD 데이터 반환
+    Prompt->>KB: 이전 프롬프트 정보 요청
+    KB-->>Prompt: 성공 프롬프트 패턴 반환
+    Prompt->>KB: 생성 코드 diff 정보 요청
+    KB-->>Prompt: Code diff 분석 결과 반환
+    Prompt->>Prompt: DLD + 프롬프트 + Code diff 통합 분석
+    
+    Prompt-->>Master: 7단계 완성된 프롬프트
+    
+    Note over Master: 3단계: LLM Optimization
+    Master->>LLM: GPT-5 최적화
+    LLM->>LLM: 프롬프트 최적화
+    LLM-->>Master: 최적화된 프롬프트
+    
+    Note over Master: 5단계: Output Processing
+    Master->>Output: 최종 처리
+    Output->>Output: 구조화 + 형식 변환
+    Output-->>Master: 최종 결과
+    
+    Note over Master: 6단계: Feedback Collection
+    Master->>Feedback: 성능 분석
+    Feedback->>KB: 성공 사례 저장 요청
+    KB-->>Feedback: 저장 완료
+    Feedback->>Feedback: 품질 분석 + 개선사항 식별
+    Feedback-->>Master: 피드백 데이터
+    
+    Master-->>API: 처리 완료
+    API-->>User: 최적화된 Cursor AI 프롬프트
+```
+
+## 파이프라인 단계별 설명
+
+### 1단계: Context Validation
+- HLD(High Level Design) 기반으로 DLD(Detailed Level Design) 문서의 일관성을 검증
+- 아키텍처 레벨에서의 호환성 확인
+
+### 2단계: Prompt Generation (7단계 파이프라인)
+1. **프로젝트 코드 구조 분석**: 디렉토리 스캔, 파일 의존성 맵핑, 아키텍처 패턴 식별
+2. **DLD 파싱 및 변환**: 기술 스펙 추출, 요구사항 분류, 마크다운 변환, 의사코드 식별
+3. **코드 맵핑 분석**: DLD-코드 매칭, 함수명 매핑, 모듈 구조 분석
+4. **코딩 스타일 추출**: 기존 코드 패턴 분석, 네이밍 컨벤션, 아키텍처 스타일, 테스트 패턴
+5. **시스템 프롬프트 로드**: 5G 도메인 지식, C++ 코딩 가이드라인
+6. **Cursor AI Rules 통합**: 팀 코딩 컨벤션, AI 활용 가이드라인
+7. **컨텍스트 보강**: 이전 DLD 정보, 성공 프롬프트 패턴, Code diff 분석
+
+### 3단계: LLM Optimization
+- GPT-5를 활용한 프롬프트 최적화
+- 도메인 특화 지식과 코딩 스타일 통합
+
+### 4단계: Output Processing
+- 최종 결과의 구조화 및 형식 변환
+- Cursor AI에서 바로 사용 가능한 형태로 출력
+
+### 5단계: Feedback Collection
+- 성능 분석 및 품질 평가
+- 성공 사례를 Knowledge Base에 저장
+- 지속적인 개선을 위한 피드백 루프
+
+## 주요 특징
+- **7단계 프롬프트 생성 파이프라인**: 체계적이고 단계별 프롬프트 최적화
+- **Knowledge Base 활용**: 이전 경험과 성공 사례를 통한 지속적 학습
+- **도메인 특화**: 5G 통신 분야의 전문 지식 통합
+- **Cursor AI 최적화**: Cursor AI의 특성을 고려한 프롬프트 생성
