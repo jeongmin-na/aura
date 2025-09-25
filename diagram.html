@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLD 프롬프트 생성 시스템 플로우차트</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .mermaid {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .diagram-container {
+            text-align: center;
+            margin: 0 auto;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>DLD 프롬프트 생성 시스템 플로우차트</h1>
+    <div class="diagram-container">
+        <div class="mermaid">
+graph TB
+    %% 입력 및 출력
+    A["DLD 입력<br/>통신 기지국<br/>설계서 + HLD"] --> B["Master Agent<br/>작업<br/>오케스트레이션"]
+    
+    %% Context Validation Agent
+    B --> C["Context<br/>Validation Agent<br/>HLD 기반<br/>DLD 검증"]
+    C --> C1["HLD 대비<br/>DLD 일관성<br/>검증"]
+    
+    %% Prompt Generator Agent - 7단계 파이프라인
+    C --> D["Prompt<br/>Generator Agent<br/>7단계 파이프라인"]
+    
+    D --> D1["1단계: 프로젝트<br/>코드 구조 분석<br/>디렉토리 스캔<br/>파일 의존성 맵핑<br/>아키텍처 패턴<br/>식별"]
+    
+    D1 --> D2["2단계: DLD<br/>파싱 및 변환<br/>기술 스펙 추출<br/>요구사항 분류<br/>마크다운 변환<br/>의사코드 식별"]
+    
+    D2 --> D3["3단계: 코드<br/>맵핑 분석<br/>DLD-코드 매칭<br/>함수명 매핑<br/>모듈 구조 분석"]
+    
+    D3 --> D4["4단계: 코딩<br/>스타일 추출<br/>기존 코드 패턴<br/>분석<br/>네이밍 컨벤션<br/>추출<br/>아키텍처 스타일<br/>학습<br/>테스트 패턴 식별"]
+    
+    D4 --> D5["5단계: 시스템<br/>프롬프트 로드<br/>통신 도메인<br/>지식<br/>코딩 가이드라인<br/>품질 기준"]
+    
+    D5 --> D6["6단계: Cursor AI<br/>Rules 통합<br/>팀 코딩 컨벤션<br/>프로젝트 규칙<br/>AI 활용<br/>가이드라인"]
+    
+    D6 --> D7["7단계: 컨텍스트<br/>보강<br/>이전 DLD 정보<br/>성공 프롬프트<br/>패턴<br/>Code diff<br/>분석 결과"]
+    
+    %% Knowledge Base 호출 (Prompt Generator)
+    D1 -.->|호출| KB1["프로젝트<br/>코드 구조"]
+    D5 -.->|호출| KB2["통신 도메인<br/>지식"]
+    D5 -.->|호출| KB3["코딩<br/>가이드라인"]
+    D6 -.->|호출| KB4["팀 코딩<br/>컨벤션"]
+    D6 -.->|호출| KB5["AI 활용<br/>가이드라인"]
+    D7 -.->|호출| KB6["이전 DLD<br/>정보"]
+    D7 -.->|호출| KB7["성공 프롬프트<br/>패턴"]
+    D7 -.->|호출| KB8["Code Diff<br/>분석 결과"]
+    
+    %% LLM Integration
+    D7 --> F["LLM Integration<br/>GPT-5<br/>프롬프트 최적화"]
+    
+    %% Prompt Output Agent
+    F --> G["Prompt<br/>Output Agent<br/>결과 후처리 및<br/>최적화"]
+    G --> G1["프롬프트<br/>구조화"]
+    G --> G2["Cursor AI<br/>형식 변환"]
+    G --> G3["검증 및<br/>테스트"]
+    
+    %% 최종 출력
+    G --> H["최적화된<br/>Cursor AI<br/>프롬프트<br/>실행 가능한<br/>고품질 코드<br/>생성용"]
+    
+    %% Feedback Loop
+    H --> I["Feedback Loop<br/>성능 모니터링"]
+    I --> I1["생성 코드<br/>품질 분석"]
+    I --> I2["프롬프트<br/>효과성 측정"]
+    I --> I3["개선사항<br/>식별"]
+    
+    I -.->|저장| KB9["성공 사례<br/>업데이트"]
+    I --> B
+    
+    %% Knowledge Base 통합
+    KB1 --> KB["Knowledge Base<br/>통합 지식 관리"]
+    KB2 --> KB
+    KB3 --> KB
+    KB4 --> KB
+    KB5 --> KB
+    KB6 --> KB
+    KB7 --> KB
+    KB8 --> KB
+    KB9 --> KB
+    
+    KB --> KB1_comp["통신 도메인<br/>온톨로지"]
+    KB --> KB2_comp["코딩 패턴<br/>라이브러리"]
+    KB --> KB3_comp["프롬프트<br/>템플릿"]
+    KB --> KB4_comp["성공 사례<br/>데이터베이스"]
+    KB --> KB5_comp["프로젝트<br/>코드 구조"]
+    KB --> KB6_comp["팀 코딩<br/>컨벤션"]
+    KB --> KB7_comp["AI 활용<br/>가이드라인"]
+    
+    %% 스타일링
+    classDef inputOutput fill:#e1f5fe,stroke:#01579b,stroke-width:4px,font-size:24px
+    classDef masterAgent fill:#fff3e0,stroke:#e65100,stroke-width:4px,font-size:24px
+    classDef contextValidation fill:#e8f5e8,stroke:#2e7d32,stroke-width:4px,font-size:24px
+    classDef promptGen fill:#f3e5f5,stroke:#4a148c,stroke-width:4px,font-size:24px
+    classDef llmIntegration fill:#fff8e1,stroke:#f57f17,stroke-width:4px,font-size:24px
+    classDef outputAgent fill:#e3f2fd,stroke:#1565c0,stroke-width:4px,font-size:24px
+    classDef feedback fill:#f1f8e9,stroke:#33691e,stroke-width:4px,font-size:24px
+    classDef knowledge fill:#fce4ec,stroke:#880e4f,stroke-width:4px,font-size:24px
+    classDef knowledgeCall stroke:#e91e63,stroke-width:5px,stroke-dasharray: 5 5
+    
+    class A,H inputOutput
+    class B masterAgent
+    class C,C1 contextValidation
+    class D,D1,D2,D3,D4,D5,D6,D7 promptGen
+    class F llmIntegration
+    class G,G1,G2,G3 outputAgent
+    class I,I1,I2,I3 feedback
+    class KB,KB1,KB2,KB3,KB4,KB5,KB6,KB7,KB8,KB9,KB1_comp,KB2_comp,KB3_comp,KB4_comp,KB5_comp,KB6_comp,KB7_comp knowledge
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+                nodeSpacing: 150,
+                rankSpacing: 180,
+                padding: 40,
+                nodeWidth: 300,
+                nodeHeight: 120
+            },
+            themeVariables: {
+                fontSize: '24px',
+                fontWeight: 'bold',
+                nodeTextSize: '24px',
+                edgeLabelFontSize: '18px',
+                primaryColor: '#ffffff',
+                primaryTextColor: '#333333',
+                primaryBorderColor: '#333333',
+                lineColor: '#666666',
+                sectionBkgColor: '#f9f9f9',
+                altSectionBkgColor: '#f0f0f0',
+                gridColor: '#e0e0e0',
+                secondaryColor: '#ffffff',
+                tertiaryColor: '#f9f9f9'
+            }
+        });
+    </script>
+</body>
+</html>
