@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5G DLD → Cursor AI 프롬프트 생성 시스템</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            padding-right: 320px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #f0f0f0;
+            font-size: 16px;
+            font-style: italic;
+        }
+
+        /* 플로우 단계별 섹션 */
+        .flow-section {
+            background: rgba(30, 30, 46, 0.95);
+            border: 1px solid #444;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .section-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e2e8f0;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(90deg, #4a5568, #2d3748);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .step-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .step-box {
+            background: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+            min-width: 280px;
+            max-width: 350px;
+        }
+
+        .step-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: #374151;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .step-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #e2e8f0;
+        }
+
+        .step-description {
+            font-size: 14px;
+            color: #cbd5e0;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .step-details {
+            font-size: 12px;
+            color: #a0aec0;
+            background: #1a202c;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 3px solid #4299e1;
+        }
+
+        /* 색상 테마별 구분 */
+        .context-validation { border-left-color: #27ae60; }
+        .prompt-generation { border-left-color: #9b59b6; }
+        .llm-optimization { border-left-color: #f39c12; }
+        .output-processing { border-left-color: #3498db; }
+        .feedback-loop { border-left-color: #2ecc71; }
+
+        /* Knowledge Base 섹션 */
+        .knowledge-base {
+            position: absolute;
+            right: 0;
+            top: 200px;
+            background: rgba(26, 32, 44, 0.95);
+            border: 2px solid #4a5568;
+            border-radius: 15px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .kb-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #f7fafc;
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 8px;
+        }
+
+        .kb-item {
+            background: #2d3748;
+            border: 1px solid #4a5568;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #e2e8f0;
+            border-left: 3px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .kb-item:hover {
+            background: #374151;
+            border-left-color: #764ba2;
+        }
+
+        /* 화살표 연결선 */
+        .flow-arrow {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 24px;
+            color: #667eea;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 1400px) {
+            .container {
+                padding-right: 0;
+            }
+            .knowledge-base {
+                position: relative;
+                right: auto;
+                top: auto;
+                margin: 20px auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .step-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .step-box {
+                min-width: 100%;
+            }
+        }
+
+        /* 입력/출력 박스 */
+        .io-box {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 30px auto;
+            max-width: 500px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            border: 1px solid #4a5568;
+        }
+
+        .pipeline-visual {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .pipeline-step {
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 180px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid #4c1d95;
+        }
+
+        .pipeline-step:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+            background: linear-gradient(45deg, #7c3aed, #a855f7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">DLD → Cursor AI 프롬프트 생성 시스템</div>
+        <div class="subtitle">멀티 에이전트 기반 지능형 프롬프트 자동 생성 아키텍처</div>
+        
+        <!-- 입력 -->
+        <div class="io-box">
+            📋 DLD 입력<br>
+            <small style="font-size: 14px; opacity: 0.9;">통신 기지국 상세 설계서 + HLD</small>
+        </div>
+        
+        <div class="flow-arrow">⬇️</div>
+
+        <!-- 1단계: Context Validation -->
+        <div class="flow-section">
+            <div class="section-header">1단계: Context Validation Agent</div>
+            <div class="step-container">
+                <div class="step-box context-validation">
+                    <div class="step-number">1</div>
+                    <div class="step-title">HLD 기반 DLD 검증</div>
+                    <div class="step-description">상위 설계서(HLD)와 상세 설계서(DLD) 간의 일관성을 검증합니다.</div>
+                    <div class="step-details">
+                        • HLD 대비 DLD 일관성 검증<br>
+                        • 설계 무결성 확인<br>
+                        • 누락된 요구사항 탐지
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">⬇️</div>
+
+        <!-- 2단계: Prompt Generation -->
+        <div class="flow-section">
+            <div class="section-header">2단계: Prompt Generator Agent - 7단계 파이프라인</div>
+            
+            <div class="pipeline-visual">
+                <div class="pipeline-step">1. 프로젝트 구조 분석</div>
+                <div class="pipeline-step">2. DLD 파싱 & 변환</div>
+                <div class="pipeline-step">3. 코드 맵핑 분석</div>
+                <div class="pipeline-step">4. 코딩 스타일 추출</div>
+                <div class="pipeline-step">5. 시스템 프롬프트 로드</div>
+                <div class="pipeline-step">6. Cursor AI Rules 통합</div>
+                <div class="pipeline-step">7. 컨텍스트 보강</div>
+            </div>
+
+            <div class="step-container">
+                <div class="step-box prompt-generation">
+                    <div class="step-number">1</div>
+                    <div class="step-title">프로젝트 구조 분석</div>
+                    <div class="step-description">Knowledge Base에서 코드 구조를 가져와 분석합니다.</div>
+                    <div class="step-details">
+                        • 디렉토리 스캔 수행<br>
+                        • 파일 의존성 맵핑<br>
+                        • 아키텍처 패턴 식별
+                    </div>
+                </div>
+
+                <div class="step-box prompt-generation">
+                    <div class="step-number">2</div>
+                    <div class="step-title">DLD 파싱 & 변환</div>
+                    <div class="step-description">DLD에서 핵심 정보를 추출하고 구조화합니다.</div>
+                    <div class="step-details">
+                        • 기술 스펙 추출<br>
+                        • 요구사항 분류<br>
+                        • 마크다운 변환<br>
+                        • 의사코드 식별
+                    </div>
+                </div>
+
+                <div class="step-box prompt-generation">
+                    <div class="step-number">3</div>
+                    <div class="step-title">코드 맵핑 분석</div>
+                    <div class="step-description">DLD의 의사코드를 실제 프로젝트 구조와 매칭합니다.</div>
+                    <div class="step-details">
+                        • DLD-코드 매칭 수행<br>
+                        • 함수명 매핑 생성<br>
+                        • 모듈 구조 분석
+                    </div>
+                </div>
+
+                <div class="step-box prompt-generation">
+                    <div class="step-number">4</div>
+                    <div class="step-title">코딩 스타일 추출</div>
+                    <div class="step-description">기존 코드에서 팀의 코딩 패턴을 학습합니다.</div>
+                    <div class="step-details">
+                        • 기존 코드 패턴 분석<br>
+                        • 네이밍 컨벤션 추출<br>
+                        • 아키텍처 스타일 학습<br>
+                        • 테스트 패턴 식별
+                    </div>
+                </div>
+
+                <div class="step-box prompt-generation">
+                    <div class="step-number">5</div>
+                    <div class="step-title">시스템 프롬프트 로드</div>
+                    <div class="step-description">도메인 지식과 코딩 가이드라인을 통합합니다.</div>
+                    <div class="step-details">
+                        • 통신 도메인 지식 조회<br>
+                        • C++ 스타일 가이드 반환<br>
+                        • 프로토콜 스택 정보
+                    </div>
+                </div>
+
+                <div class="step-box prompt-generation">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Cursor AI Rules 통합</div>
+                    <div class="step-description">팀의 AI 코딩 규칙을 적용합니다.</div>
+                    <div class="step-details">
+                        • 팀 코딩 컨벤션 적용<br>
+                        • 프로젝트 규칙 통합<br>
+                        • AI 활용 가이드라인
+                    </div>
+                </div>
+
+                <div class="step-box prompt-generation">
+                    <div class="step-number">7</div>
+                    <div class="step-title">컨텍스트 보강</div>
+                    <div class="step-description">과거 데이터를 활용해 컨텍스트를 강화합니다.</div>
+                    <div class="step-details">
+                        • 이전 DLD 정보 활용<br>
+                        • 성공 프롬프트 패턴 적용<br>
+                        • Code diff 분석 결과 반영
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">⬇️</div>
+
+        <!-- 3단계: LLM Optimization -->
+        <div class="flow-section">
+            <div class="section-header">3단계: LLM Integration & Optimization</div>
+            <div class="step-container">
+                <div class="step-box llm-optimization">
+                    <div class="step-number">3</div>
+                    <div class="step-title">GPT-5 프롬프트 최적화</div>
+                    <div class="step-description">생성된 프롬프트를 LLM에 최적화된 형태로 변환합니다.</div>
+                    <div class="step-details">
+                        • 토큰 최적화<br>
+                        • 컨텍스트 구조화<br>
+                        • 명령어 정제
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">⬇️</div>
+
+        <!-- 4단계: Output Processing -->
+        <div class="flow-section">
+            <div class="section-header">4단계: Prompt Output Agent</div>
+            <div class="step-container">
+                <div class="step-box output-processing">
+                    <div class="step-number">4</div>
+                    <div class="step-title">최종 처리 & 최적화</div>
+                    <div class="step-description">결과를 후처리하고 Cursor AI 형식으로 최적화합니다.</div>
+                    <div class="step-details">
+                        • 프롬프트 구조화<br>
+                        • Cursor AI 형식 변환<br>
+                        • 검증 및 테스트
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-arrow">⬇️</div>
+
+        <!-- 출력 -->
+        <div class="io-box">
+            🎯 최적화된 Cursor AI 프롬프트<br>
+            <small style="font-size: 14px; opacity: 0.9;">실행 가능한 고품질 코드 생성용 프롬프트</small>
+        </div>
+
+        <div class="flow-arrow">⬇️</div>
+
+        <!-- 5단계: Feedback Loop -->
+        <div class="flow-section">
+            <div class="section-header">5단계: Feedback Loop</div>
+            <div class="step-container">
+                <div class="step-box feedback-loop">
+                    <div class="step-number">5</div>
+                    <div class="step-title">성능 모니터링</div>
+                    <div class="step-description">생성된 코드의 품질을 분석하고 시스템을 개선합니다.</div>
+                    <div class="step-details">
+                        • 생성 코드 품질 분석<br>
+                        • 프롬프트 효과성 측정<br>
+                        • 개선사항 식별<br>
+                        • 성공 사례 업데이트
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Knowledge Base -->
+        <div class="knowledge-base">
+            <div class="kb-title">📚 Knowledge Base</div>
+            <div class="kb-item">통신 도메인 온톨로지</div>
+            <div class="kb-item">코딩 패턴 라이브러리</div>
+            <div class="kb-item">프롬프트 템플릿</div>
+            <div class="kb-item">성공 사례 데이터베이스</div>
+            <div class="kb-item">프로젝트 코드 구조</div>
+            <div class="kb-item">팀 코딩 컨벤션</div>
+            <div class="kb-item">AI 활용 가이드라인</div>
+            <div class="kb-item">이전 DLD 정보</div>
+            <div class="kb-item">성공 프롬프트 패턴</div>
+            <div class="kb-item">Code Diff 분석 결과</div>
+        </div>
+    </div>
+</body>
+</html>
